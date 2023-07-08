@@ -1,1 +1,189 @@
+*Request for a project(tmcel) to setup Keycloak 19 in one server(ex: 95 server)
 
+-login as ssh(if u dont have xshell)
+ #commands--
+	ssh kranthi.kumar@sts.co.in@10.0.10.95	
+	password
+	su admin
+	ls
+	cd /opt
+	ls		(take reference of existing keycloak(ex: keycloak_zain) to create newone - u will find keycloak_zain folder here)
+	cd keycloak_zain 
+	ls		(we will find docker-compose.yml file of zain)
+	vi docker-compose.yml	(copy entire file text from zain docker becoz we need to create similar for tmcel)
+	
+-copied text:(text in docker-compose.yml)
+-----
+version "3"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:19.0.1
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=mysql
+      - KC_DB_USERNAME=keycloak_user
+      - KC_DB_PASSWORD=keycloak_user@6Dtech
+      - KC_DB_URL=jdbc:mysql://10.0.10.95:3306/keycloak_zain
+      - Dkeycloak.profile.feature.upload_scripts=enabled
+    ports:
+      - 8180:8080
+    volumes:
+     - ./zain_in_ventas_int-zainventas-keycloak-theme:/opt/keycloak/themes/zain_keycloak_theme
+    command: start-dev
+-----
+
+breif explanation:
+  image: quay.io/keycloak/keycloak:19.0.1 -> this image is provided by keycloak team as opensource
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=mysql			-> we can use any db, here we are using mysql db if we dont mention it will use its internal 
+					  h2 db(ex:while working with local), need db for creating, storing tables for users related info.
+      - KC_DB_USERNAME=keycloak_user
+      - KC_DB_PASSWORD=keycloak_user@6Dtech
+      - KC_DB_URL=jdbc:mysql://10.0.10.95:3306/keycloak_zain  -> "keycloak_zain" it is a db for zain,for tmcel need new db "keycloak_tmcel"
+   ports:
+      - 8180:8080	-> keycloak default runs on 8080 we are listing to/on 8180 for zain, but for tmcel need to use other port like ex:8280
+   volumes:
+     - ./zain_in_ventas_int-zainventas-keycloak-theme:/opt/keycloak/themes/zain_keycloak_theme
+			-> so volume mount, from left side folder to it will be copied to right side to reflect themes
+			if we comment above with # it will use default keycloak theme
+-----
+ #commands--
+	esc + :q -> enter (to exist from vim)
+
+ upto now we taken reference of zain & come back to /opt path now create folder fo tmcel
+ #commands--
+  mkdir keycloak_tmcel
+	ls
+	cd keycloak_tmcel        (navigate to newly created folder & then need to create new docker-compose.yml file)
+	vi docker-compose.yml    (if it presents opens existing one's or else it will create new one & opens)
+                      (press "i"  & paste here above docker content reference that we taken)
+	cat docker-compose.yml    (used to view recently added content in docker file)
+
+docker-compose.yml (now details here edited/updated with tmcel)
+-------
+version "3"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:19.0.1
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=mysql
+      - KC_DB_USERNAME=keycloak_user
+      - KC_DB_PASSWORD=keycloak_user@6Dtech
+      - KC_DB_URL=jdbc:mysql://10.0.10.95:3306/keycloak_tmcel
+      - Dkeycloak.profile.feature.upload_scripts=enabled
+    ports:
+      - 8180:8080
+    volumes:
+     #- ./zain_in_ventas_int-zainventas-keycloak-theme:/opt/keycloak/themes/tmcel_keycloak_theme
+    command: start-dev
+
+------------
+-mysql db	
+	esc + :q  then enter 		(comeout of container)
+	cd ..   			(need to setup mysql now come to  /opt path)
+	mysql -u root -p root@6Dtech    (db creds: root/root@6Dtech)
+	show databases;
+	create database keycloak_tmcel;
+	show databases;			(now the db is successfully created)
+	
+	GRANT ALL PRIVILEGES ON *.* TO 'keycloakuser'@'%';        (granting all permissions to user)
+	FLUSH PRIVILEGES;					  (remove existing/prev previleges & grants new )
+	exit;				(to exist from mysql shell)
+	
+-Addin themes in docker container
+	-> now in docker-container need to add themes folder that we have in local
+ 	-> so we use winSCP (using sftp protocal to transfer files from local to server)
+	
+-winscp
+	->open winscp -> SFTP(File protocal), 10.0.10.95(HostName), kranthi.kumar@sts.co.in(username), password(password)
+		    -> click login -> yes -> continue ->
+	->now in winscp we will see left side local file explored & right side server file explored
+	-> In right side go to /tmp folder( by double click on it)
+	-> now go to themes location in our local explorer & drag towards rightside to server ,then it will get copied to server themes folder
+	   Note: make a zip file before copying in server
+	-> 
+   
+ #commands----
+	cd /opt              	(go to opt location)
+	ls
+	cd keycloak_tmcel/   	(if u get permission denied so normal don't have acces/edit view so need to shift as admin)
+	su admin             	(su admin/@tW1Un5e6(@$#a7$#@&5)
+	@tW1Un5e6(@$#a7$#@&5
+	cd keycloak_tmcel/   	(now u wont get permission denied)
+	ls		  	(now we have only one docker-compose.yml becoz newly created ,so need to copy themes folder here also)
+	cp /tmp/ums-keycloak-theme-lib.zip	
+				(earlier we have copied theme folder from local to /tmp location, we need here actually so we use cp command 
+				 to copy from /tmp location to here)
+	unzip ums-keycloak-theme-lib.zip
+				(unzip above copied file)
+	ls			(u will see here copied files also now)
+	cd ums-keycloak-theme-lib
+	ls			(u can check/confirm u have files inside recently copied folder)
+	cd ..			(come to docker-compose.yml location)
+	vi docker-compose up -d
+				(if u get below error while making up, use sudo command prefix)
+		ERROR: coudn't connet to Docker daemon 
+	sudo docker-compose up -d
+	
+-check now:
+	(now go to chrome, hit below site & check)
+  creds:
+	http://10.0.10.95:8280/
+	admin/admin
+
+ 	wait for few minutes to becom server up (we can check logs to see server up or not)
+	
+ #commands---
+	docker ps | grep 8280	(u will see running image,  now copy container_id)
+	docker logs <container_id> --follow
+	
+-final keyclock configure:
+	-> visit http://10.0.10.95:8280/    	admin/admin
+	-> Need to create new realm instead of master
+		click on master dropdown-> create new -> tmcel(Realm name) -> create
+	-> Go to realm settings & under themes see wheather our custom-theme we added earlier is showing in login/account dropdown or not  
+
+-if not coming go to docker & need to check
+ 
+ #commands---
+	docker ps | grep 8280       		(copy container_id)
+	docker exec -it <container_id> bash
+	ls
+	cd /opt
+	ls
+	cd keycloak
+	ls
+	cd themes
+	ls
+	cd 6d_keycloak_themes	(permission denied)
+	ls -lhrt		(check permission using this command)
+	exit
+	
+	ls			(now we are in keycloak_tmcel directory after exit)
+				(you will see theme folder earlier we copied using cp command )
+	ls -lhrt
+		drwxr-x--- 7 admin admin ums-theme-lib
+				(u will like above drwxr permission of specified folder"ums-theme-lib")
+
+	chmod 777 ums-theme-lib	(giving all permission need to use this command)
+
+	ls -lhrt		( now u see )
+		drwxrwxrwx--- 7 admin admin ums-theme-lib
+				(now u see it is changed to drwxrwxrwx coded version of 777 means given full permission)
+	docker-compose down
+	docker-compose up -d
+	
+ now go & check wheather u can see added custome-theme in dropdown or not
+ able to see, because of these if the keycloak is down due to internal server issue
+ try to uncomment the volume mount,so now the default theme is loaded & keycloak server is up
+	
+#commands---
+	vi docker-compose.yml   (comment along with key volume)
+	docker-compose down
+	docker-compose up -d
