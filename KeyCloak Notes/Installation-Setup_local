@@ -1,1 +1,57 @@
+*Install Java,Keyclock & Maven(need to confirm) need to check all this each other  compatability before installing, using
 
+*Java: jdk-17
+	Edit env variables 
+	-> System Variables -> click New & add below env variables
+		JAVA_HOME:C:\Program Files\Java\jdk-17
+	-> System Variables -> Select path & click Edit -> add below path
+		%JAVA_HOME%\bin
+
+*Maven: apache-maven-3.9.3-bin (download from official website)
+ 	Configure
+	Edit env variables 
+	-> System Variables -> click New & add below 2 times separtely
+		M2_HOME:C:\Softwares\apache-maven-3.8.2-bin\apache-maven-3.8.2
+		MAVEN_HOME:C:\Softwares\apache-maven-3.8.2-bin\apache-maven-3.8.2
+	-> System Variables -> Select path & click Edit -> add below path
+		%M2_HOME%\bin
+		%MAVEN_HOME%\bin
+
+*KeyClock Installation & setup: 
+	visit -> https://www.keycloak.org/
+	Site -> Download ->  Server -> KeyClock(Distribution powered by Quarkus) -> DownLoad It
+                 for older versions go to Download -> scroll down click on Previous Release/Versions(19.0.1 currently using) -> then download it
+                   
+	Extract Zip -> open cmd at bin location (D:\KeyClock\keycloak-21.1.2\keycloak-21.1.2\bin)
+	#command (to start/ local server from bin loader)
+        code .
+	cd bin
+	./kc.bat start-dev
+	
+	Open http://localhost:8080/ in browser & give username,pass signin
+
+*Configuring KeyCloak after up:
+	-Navigate to http://localhost:8080/
+	-set username, password for admin (ex: admin/admin)
+	-Admintration console -> login(admin) ->
+	*Creating users:
+		add users ->Users -> Add user -> creatusers(ex: testuser/testuser)
+		select created user from list of users -> credentials -> setpassword
+	*Creating clients:
+		clients -> create client -> enter details -> next,next & save (ex: client1, client2 ..etc)
+	
+  *Adding Clients to Users:(based on custom_attribute : allowedClients)
+	 -login as admin: admin/admin
+		Users -> select specific user(ex: testuser) -> Attributes -> key(allowedClients),value(client1,client2) -> save
+	 -relogin/refresh the testuser keycloack
+		Under application -> app -> u can see two above added clients
+	
+	 -open keycloak site in incognito tab & login as another testuser we created
+		top right click on username -> manage account -> Applications (so can see what all apps/clients have accces to this user here)
+		
+*To change the default theme:(instead of kecloak theme)
+	-Navigate to http://localhost:8080/
+	-login as admin -> Realm settings -> themes -> login,account,..etc(need to choose theme from dropdown)
+		*To see our custom theme in dropdown,First in our local keycloak code/path under themes folder need to add/clone
+	  	 our custom theme folder (path after adding ex: themes/user-management-keycloak-theme-lib)
+		*save it & refresh in keycloak server now u can see custom theme in admin themes dropdown.
