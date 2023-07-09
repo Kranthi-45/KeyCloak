@@ -59,13 +59,19 @@
 
 *Configuring KeyCloak after up:
 	-Admintrative console -> login(admin -created creds) ->
+        *Creating realm:						 ----------------- optional we use master realm also & follow steps from *Creating users----
+		-top-left master dropdown -add realm -> give details -> save
+                -next Create Users from this created realm or else we can create users with default master realm also.
+                -We can confirm our newly created user from newly created realm by navigating to below URL
+		http://localhost:8080/auth/realms/<created-realm-name>/account.  (to confirm created realm & user)
+		http://localhost:8080                                            (to confirm created user from master, logout admin & login as created user)
 	*Creating users:
 		add users ->Users -> Add user -> creatusers(ex: testuser/testuser)
 		select a created user from list of users -> credentials -> setpassword
 	*Creating clients:
 		clients -> create client -> enter details -> next,next & save (ex: client1, client2 ..etc)
 	
-  *Adding Clients to Users:( optional ---> based on custom_attribute : allowedClients) --------------- optional used in realtime projects
+ *Adding Clients to Users:( based on custom_attribute : allowedClients) --------------------optional used in realtime projects-----------------
 	 -login as admin: admin/admin
 		Users -> select specific user(ex: testuser) -> Attributes -> key(allowedClients),value(client1,client2) -> save
 	 -relogin/refresh the testuser keycloack
@@ -74,7 +80,7 @@
 	 -open keycloak site in the incognito tab & login as another testuser we created
 		top right click on username -> manage account -> Applications (so can see what all apps/clients have accces to this user here)
 		
-*To change the default theme:(instead of kecloak theme)				------------------------ optional used in realtime projects
+*To change the default theme:(instead of kecloak theme)		  ------------------------ optional used in realtime projects----------
 	-Navigate to http://localhost:8080/
 	-login as admin -> Realm settings -> themes -> login,account,..etc(need to choose theme from dropdown)
 		*To see our custom theme in the dropdown, First in our local keycloak code/path under the themes folder need to add/clone
