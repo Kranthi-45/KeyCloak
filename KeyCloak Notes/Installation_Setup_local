@@ -18,6 +18,12 @@
 		%MAVEN_HOME%\bin
 
 *KeyClock Installation & setup: 
+ 2 ways:
+	1) Traditional by downloading zip file from the official site
+	2) By Pulling Docker Image
+
+ 1) Traditional way:
+ -----------------
 	visit -> https://www.keycloak.org/
 	Site -> Download ->  Server -> KeyClock(Distribution powered by Quarkus) -> Download It
                  for older versions go to Download -> scroll down click on Previous Release/Versions(19.0.1 currently using) -> then download it
@@ -27,8 +33,26 @@
         code .
 	cd bin
 	./kc.bat start-dev
-	
+
 	Open http://localhost:8080/ in the browser & give a username, pass & sign in
+	-Navigate to http://localhost:8080/
+	-set username and password for admin (ex: admin/admin)
+
+         or
+
+ 2) Pulling Docker Image:
+ ----------------------
+	Install Docker
+	#commands
+	docker version
+	docker pull jboss/keycloak             (pull the KeyCloak image from Docker Hub )
+	docker run -p 8080:8080 -e KEYCLOAK_PASSWORD=admin -e KEYCLOAK_USER=admin -e DB_VENDOR=H2 jboss/keycloak
+      info:
+      ----
+	-the port you need to expose is 8080,
+	-Keycloak doesn’t have an initial admin account by default; to be able to log in, you need to provide KEYCLOAK_USER and KEYCLOAK_PASSWORD environment variables,
+	you need to specify a database for Keycloak to use, with the easiest option being an embedded H2 instance; 
+	if you’d like to provide another (PostgreSQL, MySQL, and MariaDB are supported out-of-the-box), you can follow the instructions in the image reference.
 
 *Configuring KeyCloak after up:
 	-Navigate to http://localhost:8080/
@@ -53,5 +77,5 @@
 	-Navigate to http://localhost:8080/
 	-login as admin -> Realm settings -> themes -> login,account,..etc(need to choose theme from dropdown)
 		*To see our custom theme in the dropdown, First in our local keycloak code/path under the themes folder need to add/clone
-	  	 our custom theme folder (path after adding ex: themes/user-management-keycloak-theme-lib)
+	  	 our custom theme folder in keycloak downloaded files unde themes folder (path after adding ex: themes/user-management-keycloak-theme-lib)
 		*save it & refresh it in keycloak server now you can see the custom theme in the admin themes dropdown.
