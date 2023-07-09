@@ -1,6 +1,6 @@
 *Request for a realtime project(tmcel) to setup Keycloak 19 in one server(ex: 95 server): using docker container, mysqldb, custom theme in realtime
 
--login as ssh(if u dont have xshell)
+-login as ssh in cmd(if u dont have xshell app)
  #commands--
 	ssh kranthi.kumar@sts.co.in@10.0.10.95	
 	password
