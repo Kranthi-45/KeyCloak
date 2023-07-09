@@ -40,7 +40,7 @@
 	*Creating clients:
 		clients -> create client -> enter details -> next,next & save (ex: client1, client2 ..etc)
 	
-  *Adding Clients to Users:(based on custom_attribute : allowedClients)
+  *Adding Clients to Users:( optional ---> based on custom_attribute : allowedClients)
 	 -login as admin: admin/admin
 		Users -> select specific user(ex: testuser) -> Attributes -> key(allowedClients),value(client1,client2) -> save
 	 -relogin/refresh the testuser keycloack
