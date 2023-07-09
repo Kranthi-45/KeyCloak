@@ -19,7 +19,7 @@
 
 *KeyClock Installation & setup: 
  2 ways:
-	1) Traditional by downloading zip file from the official site
+	1) Traditional way by downloading zip file from the official site
 	2) By Pulling Docker Image
 
  1) Traditional way:
