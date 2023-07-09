@@ -1,4 +1,4 @@
-*Request for a project(tmcel) to setup Keycloak 19 in one server(ex: 95 server): using docker container, mysqldb, custom theme
+*Request for a realtime project(tmcel) to setup Keycloak 19 in one server(ex: 95 server): using docker container, mysqldb, custom theme in realtime
 
 -login as ssh(if u dont have xshell)
  #commands--
